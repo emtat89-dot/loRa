@@ -28,29 +28,27 @@ def communication_simulation(parameters):
     boltzmann_constant = 1.38 * 10**(-23)
     noise = boltzmann_constant * temperature * bandwidth
 
-    # -------------------------------
-    # 2. Random generator
-    # -------------------------------
+
 
     random_generator = np.random.default_rng()
 
-    # -------------------------------
+
     # 3. Random node distances
-    # -------------------------------
+
 
     distance = radius * random_generator.random(number_of_nodes)
 
-    # -------------------------------
+
     # 4. Transmission probability by zone
-    # -------------------------------
+
 
     node_zone_indices = np.digitize(distance, zone_limits)
 
     node_probabilities = zone_probabilities[node_zone_indices]
 
-    # -------------------------------
+
     # 5. Free-space path loss
-    # -------------------------------
+
 
     # PL(dB) = 20 * log10(4 * π * d / λ)
 
@@ -62,9 +60,6 @@ def communication_simulation(parameters):
 
     path_loss = 10 ** (-path_loss_db / 10)
 
-    # -------------------------------
-    # 6. State variable
-    # -------------------------------
 
     # Μας ενδιαφέρει ποιοι κόμβοι πέτυχαν μεταφορά πακέτου.
     packet_transfer_success = np.zeros(number_of_nodes, dtype=bool)
@@ -86,11 +81,7 @@ def communication_simulation(parameters):
         # δηλαδή αυτούς που εκπέμπουν στο συγκεκριμένο slot.
         transmitting_nodes = np.where(transmit)[0]
 
-        # -------------------------------
-        # Fading
-        # -------------------------------
 
-        # Για αρχή παίρνουμε h ως τυχαία τιμή από 0 έως 1.
         h = random_generator.random(len(transmitting_nodes))
 
         # Χρησιμοποιούμε h^2 ως fading στην ισχύ.
@@ -103,9 +94,6 @@ def communication_simulation(parameters):
             fading * path_loss[transmitting_nodes]
         )
 
-        # -------------------------------
-        # SINR calculation
-        # -------------------------------
 
         for i in range(len(transmitting_nodes)):
 
@@ -127,9 +115,9 @@ def communication_simulation(parameters):
             if sinr >= gamma_threshold:
                 packet_transfer_success[node_index] = True
 
-    # -------------------------------
+
     # 8. Results table
-    # -------------------------------
+
 
     results = pd.DataFrame({
         "node": np.arange(number_of_nodes),
@@ -144,9 +132,9 @@ def communication_simulation(parameters):
     return results
 
 
-# -------------------------------
+
 # Parameters
-# -------------------------------
+
 
 parameters = {
     "topology": {
@@ -205,9 +193,7 @@ parameters = {
 }
 
 
-# -------------------------------
-# Run simulation
-# -------------------------------
+
 
 results = communication_simulation(parameters)
 
