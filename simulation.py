@@ -3,7 +3,7 @@ import pandas as pd
 
 BOLTZMANN_CONSTANT = 1.38e-23
 
-
+#simulation#
 def thermal_noise(temperature, bandwidth):
     return BOLTZMANN_CONSTANT * temperature * bandwidth
 
