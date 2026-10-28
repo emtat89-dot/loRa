@@ -40,7 +40,6 @@ def communication_simulation(parameters):
     # -------------------------------
 
     # Ομοιόμορφη τυχαία κατανομή μέσα στον κύκλο
-
     distance = radius * np.sqrt(
         random_generator.random(number_of_nodes)
     )
@@ -64,7 +63,6 @@ def communication_simulation(parameters):
     # -------------------------------
 
     # PL(dB) = 20 * log10(4 * π * d / λ)
-
     path_loss_db = 20 * np.log10(
         4 * np.pi * distance / wavelength
     )
@@ -92,27 +90,18 @@ def communication_simulation(parameters):
 
         transmitting_nodes = np.where(transmit)[0]
 
-        # Πλήθος κόμβων που εκπέμπουν στο slot
+        # Πλήθος κόμβων που εκπέμπουν στο συγκεκριμένο slot
         N = np.sum(transmit)
 
-        # -------------------------------
         # Exponential fading
-        # -------------------------------
-
         fading = random_generator.exponential(size=N)
 
-        # -------------------------------
         # Received power at base station
-        # -------------------------------
-
         power_at_base_station = (
             fading * path_loss[transmitting_nodes]
         )
 
-        # -------------------------------
         # SINR calculation
-        # -------------------------------
-
         for i in range(N):
 
             node_index = transmitting_nodes[i]
@@ -208,27 +197,27 @@ for i in range(3):
 
     parameters["channel"]["gamma_threshold"] = threshold
 
-    results = communication_simulation(parameters)
+    results_threshold = communication_simulation(parameters)
 
-    all_results[threshold] = results
+    all_results[threshold] = results_threshold
 
     print("\nGamma threshold:", threshold)
 
     print(
         "Nodes with successful packet transfer:",
-        (results["successful_transmissions"] > 0).sum(),
+        (results_threshold["successful_transmissions"] > 0).sum(),
         "out of",
-        len(results)
+        len(results_threshold)
     )
 
     print(
         "Total successful transmissions:",
-        results["successful_transmissions"].sum()
+        results_threshold["successful_transmissions"].sum()
     )
 
     print(
         "Proportion of nodes with successful packet transfer:",
-        (results["successful_transmissions"] > 0).mean()
+        (results_threshold["successful_transmissions"] > 0).mean()
     )
 
 
@@ -240,15 +229,15 @@ for i in range(3):
 
     threshold = thresholds[i]
 
-    results = all_results[threshold]
+    results_threshold = all_results[threshold]
 
     success_probability = (
-        results["successful_transmissions"]
+        results_threshold["successful_transmissions"]
         / parameters["transmission"]["time_slots"]
     )
 
     plt.plot(
-        results["distance_to_base_station"],
+        results_threshold["distance_to_base_station"],
         success_probability,
         "o"
     )
@@ -272,11 +261,11 @@ for i in range(3):
 
     threshold = thresholds[i]
 
-    results = all_results[threshold]
+    results_threshold = all_results[threshold]
 
     plt.plot(
-        results["distance_to_base_station"],
-        results["successful_transmissions"],
+        results_threshold["distance_to_base_station"],
+        results_threshold["successful_transmissions"],
         "o"
     )
 
